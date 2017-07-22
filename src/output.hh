@@ -12,5 +12,7 @@ public:
     : capacity_( capacity )
   {}
 
-  double delivery_rate( const Multiplex & multiplex ) const;
+  double capacity() const { return capacity_; }
+  double delivery_proportion( const Multiplex & multiplex ) const;
+  double output_rate( const Multiplex & multiplex ) const;
 };

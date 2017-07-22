@@ -6,14 +6,12 @@
 
 using namespace std;
 
-double Output::delivery_rate( const Multiplex & multiplex ) const
+double Output::delivery_proportion( const Multiplex & multiplex ) const
 {
-  const double input = multiplex.total();
-  assert( input >= 0 );
+  return output_rate( multiplex ) / multiplex.total();
+}
 
-  if ( input < capacity_ ) {
-    return 1.0;
-  } else {
-    return capacity_ / input;
-  }
+double Output::output_rate( const Multiplex & multiplex ) const
+{
+  return min( multiplex.total(), capacity_ );
 }

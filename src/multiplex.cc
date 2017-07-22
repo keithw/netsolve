@@ -16,5 +16,5 @@ void Multiplex::set_rate( const unsigned int index, const double rate )
 
 double Multiplex::total() const
 {
-  return accumulate( inputs_.begin(), inputs_.end(), 0 );
+  return accumulate( inputs_.begin(), inputs_.end(), 0.0 );
 }
