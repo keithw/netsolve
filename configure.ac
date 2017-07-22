@@ -4,7 +4,7 @@
 AC_PREREQ([2.68])
 AC_INIT([netsolve], [0.01], [keithw@cs.stanford.edu])
 AM_INIT_AUTOMAKE([foreign])
-AC_CONFIG_SRCDIR([src/router.hh])
+AC_CONFIG_SRCDIR([src/output.hh])
 AC_CONFIG_HEADERS([config.h])
 
 # Add picky CXXFLAGS

@@ -1,8 +1,8 @@
-#include "router.hh"
+#include "output.hh"
 
 int main()
 {
-  Router r __attribute((unused));
+  Output o { 5 };
 
   return 0;
 }
