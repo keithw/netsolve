@@ -2,6 +2,8 @@
 
 #include "output.hh"
 #include "multiplex.hh"
+#include "source.hh"
+#include "parking_lot.hh"
 
 int main()
 {
