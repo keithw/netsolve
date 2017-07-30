@@ -71,7 +71,7 @@ tuple<double, double, double> search_one( ParkingLot & network,
 {
   //  cout << "Optimizing sender " << i << "\n";
 
-  double delta = 256 * numeric_limits<double>::epsilon();
+  double delta = 32768 * numeric_limits<double>::epsilon();
 
   while ( true ) {
     if ( delta >= 0.1 ) {
@@ -177,6 +177,7 @@ int main()
 
 	cout << A << " " << B << " " << C << " -> ";
 	print( best_rates );
+	cout << flush;
       }
     }
   }
