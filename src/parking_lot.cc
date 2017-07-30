@@ -4,10 +4,12 @@
 
 using namespace std;
 
-tuple<double, double, double> ParkingLot::throughputs( const double A_rate,
-						       const double B_rate,
-						       const double C_rate )
+ParkingLot::Rates ParkingLot::throughputs( const ParkingLot::Rates & rates )
 {
+  double A_rate, B_rate, C_rate;
+  tie( A_rate, B_rate, C_rate ) = rates;
+  /* in C++17: const auto [ A_rate, B_rate, C_rate ] = rates; */
+
   A.set_rate( A_rate );
   B.set_rate( B_rate );
   C.set_rate( C_rate );
@@ -24,10 +26,12 @@ tuple<double, double, double> ParkingLot::throughputs( const double A_rate,
            z.terminal_flow( "C" ).rate() };
 }
 
-tuple<double, double, double> ParkingLot::throughputs_shortcut( const double A_rate,
-								const double B_rate,
-								const double C_rate ) const
+ParkingLot::Rates ParkingLot::throughputs_shortcut( const Rates & rates ) const
 {
+  double A_rate, B_rate, C_rate;
+  tie( A_rate, B_rate, C_rate ) = rates;
+  /* in C++17: const auto [ A_rate, B_rate, C_rate ] = rates; */
+
   const double x_transiting_input = A_rate + C_rate;
   const double x_output = min( x_transiting_input, x.output_capacity() );
   const double x_delivery_proportion = x_output / x_transiting_input;
@@ -46,14 +50,12 @@ tuple<double, double, double> ParkingLot::throughputs_shortcut( const double A_r
   return { A_throughput, B_throughput, C_throughput };
 }
 
-tuple<double, double, double> ParkingLot::throughputs_fast( const double A_rate,
-							 const double B_rate,
-							 const double C_rate )
+ParkingLot::Rates ParkingLot::throughputs_fast( const ParkingLot::Rates & rates )
 {
-  const auto fast_answer = throughputs_shortcut( A_rate, B_rate, C_rate );
+  const auto fast_answer = throughputs_shortcut( rates );
 
-  if ( calculation_count_++ % 73 == 0 ) {
-    const auto slow_answer = throughputs( A_rate, B_rate, C_rate );
+  if ( calculation_count_++ % AUDIT_INTERVAL == 0 ) {
+    const auto slow_answer = throughputs( rates );
     audit_count_++;
     if ( fast_answer != slow_answer ) {
       throw logic_error( "fast and slow throughput calculations disagree" );
@@ -61,4 +63,11 @@ tuple<double, double, double> ParkingLot::throughputs_fast( const double A_rate,
   }
 
   return fast_answer;
+}
+
+string to_string( const ParkingLot::Rates & rates )
+{
+  return "A=" + to_string( get<0>( rates ) )
+    + ", B=" + to_string( get<1>( rates ) )
+    + ", C=" + to_string( get<2>( rates ) );
 }

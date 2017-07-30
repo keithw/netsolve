@@ -1,13 +1,21 @@
 #pragma once
 
 #include <tuple>
+#include <string>
 
 #include "node.hh"
 #include "flow.hh"
 
 class ParkingLot
 {
+public:
+  typedef std::tuple<double, double, double> Rates;
+
+  static constexpr double max_reasonable_rate() { return 50; }
+
 private:
+  static const constexpr unsigned int AUDIT_INTERVAL = 73;
+
   Node x { "x", 20 };
   Node y { "y", 10 };
   Node z { "z", 0 };
@@ -16,21 +24,17 @@ private:
   Flow B { "B", "z" };
   Flow C { "C", "z" };
 
-  std::tuple<double, double, double> throughputs_shortcut( const double A_rate,
-							const double B_rate,
-							const double C_rate ) const;
+  Rates throughputs_shortcut( const Rates & rates ) const;
 
   unsigned int calculation_count_ {};
   unsigned int audit_count_ {};
 
 public:
-  std::tuple<double, double, double> throughputs( const double A_rate,
-					       const double B_rate,
-					       const double C_rate );
+  Rates throughputs( const Rates & rates );
 
-  std::tuple<double, double, double> throughputs_fast( const double A_rate,
-						    const double B_rate,
-						    const double C_rate );
+  Rates throughputs_fast( const Rates & rates );
 
   unsigned int audit_count() const { return audit_count_; }
 };
+
+extern std::string to_string( const ParkingLot::Rates & rates );
