@@ -1,10 +1,8 @@
 AM_CPPFLAGS = $(CXX14_FLAGS)
 AM_CXXFLAGS = $(PICKY_CXXFLAGS)
 
-common_source = output.hh output.cc \
-	multiplex.hh multiplex.cc \
-	source.hh \
-	parking_lot.hh
+common_source = router.hh router.cc \
+	flow.hh
 
 bin_PROGRAMS = demo
 
