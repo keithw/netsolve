@@ -9,7 +9,7 @@ class ParkingLot
 {
 private:
   Node x { "x", 20 };
-  Node y { "y", 20 };
+  Node y { "y", 10 };
   Node z { "z", 0 };
 
   Flow A { "A", "y" };
