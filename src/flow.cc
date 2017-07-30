@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <string>
 
 #include "flow.hh"
 
@@ -17,5 +18,14 @@ Flow Flow::scale( const double delivery_proportion ) const
     throw invalid_argument( "delivery proportion = " + to_string( delivery_proportion ) );
   }
 
-  return Flow( source_, destination_, rate_ * delivery_proportion );
+  Flow ret = *this;
+  ret.set_rate( rate_ * delivery_proportion );
+  return ret;
+}
+
+string Flow::str() const
+{
+  const string ret = source_ + "->" + destination_ + " throughput=" + to_string( rate_ )
+    + " (route " + route_ + ")";
+  return ret;
 }

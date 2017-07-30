@@ -48,8 +48,8 @@ const Flow & Node::terminal_flow( const std::string & source ) const
 {
   const Flow & ret = inputs_.at( source );
 
-  if ( not flow_transits_node( inputs_.at( source ) ) ) {
-    throw runtime_error( "Flow from " + source + " does not transit node " + name_ );
+  if ( flow_transits_node( inputs_.at( source ) ) ) {
+    throw runtime_error( "Flow from " + source + " does not terminate at node " + name_ );
   }
 
   return ret;
