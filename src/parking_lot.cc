@@ -4,9 +4,9 @@
 
 using namespace std;
 
-tuple<float, float, float> ParkingLot::throughputs( const float A_rate,
-						       const float B_rate,
-						       const float C_rate )
+tuple<double, double, double> ParkingLot::throughputs( const double A_rate,
+						       const double B_rate,
+						       const double C_rate )
 {
   A.set_rate( A_rate );
   B.set_rate( B_rate );
@@ -24,31 +24,31 @@ tuple<float, float, float> ParkingLot::throughputs( const float A_rate,
            z.terminal_flow( "C" ).rate() };
 }
 
-tuple<float, float, float> ParkingLot::throughputs_shortcut( const float A_rate,
-								const float B_rate,
-								const float C_rate ) const
+tuple<double, double, double> ParkingLot::throughputs_shortcut( const double A_rate,
+								const double B_rate,
+								const double C_rate ) const
 {
-  const float x_transiting_input = A_rate + C_rate;
-  const float x_output = min( x_transiting_input, x.output_capacity() );
-  const float x_delivery_proportion = x_output / x_transiting_input;
+  const double x_transiting_input = A_rate + C_rate;
+  const double x_output = min( x_transiting_input, x.output_capacity() );
+  const double x_delivery_proportion = x_output / x_transiting_input;
 
-  const float A_throughput = A_rate * x_delivery_proportion;
+  const double A_throughput = A_rate * x_delivery_proportion;
 
-  const float C_rate_after_x = C_rate * x_delivery_proportion;
+  const double C_rate_after_x = C_rate * x_delivery_proportion;
 
-  const float y_transiting_input = C_rate_after_x + B_rate;
-  const float y_output = min( y_transiting_input, y.output_capacity() );
-  const float y_delivery_proportion = y_output / y_transiting_input;
+  const double y_transiting_input = C_rate_after_x + B_rate;
+  const double y_output = min( y_transiting_input, y.output_capacity() );
+  const double y_delivery_proportion = y_output / y_transiting_input;
 
-  const float B_throughput = B_rate * y_delivery_proportion;
-  const float C_throughput = C_rate_after_x * y_delivery_proportion;
+  const double B_throughput = B_rate * y_delivery_proportion;
+  const double C_throughput = C_rate_after_x * y_delivery_proportion;
 
   return { A_throughput, B_throughput, C_throughput };
 }
 
-tuple<float, float, float> ParkingLot::throughputs_fast( const float A_rate,
-							 const float B_rate,
-							 const float C_rate )
+tuple<double, double, double> ParkingLot::throughputs_fast( const double A_rate,
+							 const double B_rate,
+							 const double C_rate )
 {
   const auto fast_answer = throughputs_shortcut( A_rate, B_rate, C_rate );
 

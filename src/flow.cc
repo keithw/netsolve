@@ -12,7 +12,7 @@ Flow Flow::add_hop( const string & hop ) const
   return ret;
 }
 
-Flow Flow::scale( const float delivery_proportion ) const
+Flow Flow::scale( const double delivery_proportion ) const
 {
   if ( delivery_proportion < 0 or delivery_proportion > 1 ) {
     throw invalid_argument( "delivery proportion = " + to_string( delivery_proportion ) );

@@ -7,39 +7,39 @@
 
 using namespace std;
 
-float PCC_utility( const float sending_rate,
-		   const float throughput )
+double PCC_utility( const double sending_rate,
+		   const double throughput )
 {
-  const float loss_rate = 1 - throughput / sending_rate;
+  const double loss_rate = 1 - throughput / sending_rate;
   return throughput * ( 1.0f - 1.0f / ( 1.0f + exp( -100.0f * ( loss_rate - 0.05f ) ) ) ) - sending_rate * loss_rate;
 }
 
-float utility( const float sending_rate __attribute((unused)),
-	       const float throughput )
+double utility( const double sending_rate __attribute((unused)),
+	       const double throughput )
 {
   return log( throughput );
 }
 
 
 template <unsigned int i>
-tuple<float, float, float> search_one( ParkingLot & network,
-				       tuple<float, float, float> guess,
-				       const float search_radius )
+tuple<double, double, double> search_one( ParkingLot & network,
+				       tuple<double, double, double> guess,
+				       const double search_radius )
 {
-  tuple<float, float, float> best_rates { -1, -1, -1 };
-  float best_score = numeric_limits<float>::lowest();
+  tuple<double, double, double> best_rates { -1, -1, -1 };
+  double best_score = numeric_limits<double>::lowest();
 
-  const float the_min = max( 0.0f, get<i>( guess ) - search_radius );
-  const float the_max = get<i>( guess ) + search_radius;
+  const double the_min = max( 0.0, get<i>( guess ) - search_radius );
+  const double the_max = get<i>( guess ) + search_radius;
 
   cout << "Optimizing sender " << i << " on [" << the_min << ".." << the_max << "].\n";
 
-  for ( float val = the_min; val < the_max; val += (the_max - the_min) / 10000.0f ) {
+  for ( double val = the_min; val < the_max; val += (the_max - the_min) / 1000000.0 ) {
     get<i>( guess ) = val;
     const auto throughputs = network.throughputs_fast( get<0>( guess ),
 						       get<1>( guess ),
 						       get<2>( guess ) );
-    const float score = PCC_utility( get<i>( guess ), get<i>( throughputs ) );
+    const double score = PCC_utility( get<i>( guess ), get<i>( throughputs ) );
 
     if ( score > best_score ) {
       best_score = score;
@@ -50,30 +50,30 @@ tuple<float, float, float> search_one( ParkingLot & network,
   return best_rates;  
 }
 
-tuple<float, float, float> search( ParkingLot & network,
-				   const tuple<float, float, float> guess,
-				   const float search_radius )
+tuple<double, double, double> search( ParkingLot & network,
+				   const tuple<double, double, double> guess,
+				   const double search_radius )
 {
   bool edge = true;
-  tuple<float, float, float> best_throughputs { -1, -1, -1 };
-  float best_score = numeric_limits<float>::lowest();
+  tuple<double, double, double> best_throughputs { -1, -1, -1 };
+  double best_score = numeric_limits<double>::lowest();
 
-  const float A_min = max( 0.0f, get<0>( guess ) - search_radius );
-  const float A_max = get<0>( guess ) + search_radius;
-  const float B_min = max( 0.0f, get<1>( guess ) - search_radius );
-  const float B_max = get<1>( guess ) + search_radius;
-  const float C_min = max( 0.0f, get<2>( guess ) - search_radius );
-  const float C_max = get<2>( guess ) + search_radius;
+  const double A_min = max( 0.0, get<0>( guess ) - search_radius );
+  const double A_max = get<0>( guess ) + search_radius;
+  const double B_min = max( 0.0, get<1>( guess ) - search_radius );
+  const double B_max = get<1>( guess ) + search_radius;
+  const double C_min = max( 0.0, get<2>( guess ) - search_radius );
+  const double C_max = get<2>( guess ) + search_radius;
 
   cerr << "Searching A in [" << A_min << ".." << A_max << "]"
        << ", B in [" << B_min << ".." << B_max << "]"
        << ", C in [" << C_min << ".." << C_max << "].\n";
 
-  for ( float A = A_min; A < A_max; A += (A_max - A_min) / 500.0f ) {
-    for ( float B = B_min; B < B_max; B += (B_max - B_min) / 500.0f ) {
-      for ( float C = C_min; C < C_max; C += (C_max - C_min) / 500.0f ) {
+  for ( double A = A_min; A < A_max; A += (A_max - A_min) / 500.0 ) {
+    for ( double B = B_min; B < B_max; B += (B_max - B_min) / 500.0 ) {
+      for ( double C = C_min; C < C_max; C += (C_max - C_min) / 500.0 ) {
 	const auto throughputs = network.throughputs_fast( A, B, C );
-	const float score =
+	const double score =
 	  PCC_utility( A, get<0>( throughputs ) )
 	  + PCC_utility( B, get<1>( throughputs ) )
 	  + PCC_utility( C, get<2>( throughputs ) );	  
@@ -96,7 +96,7 @@ tuple<float, float, float> search( ParkingLot & network,
   return best_throughputs;
 }
 
-void print( const tuple<float, float, float> & best_rates )
+void print( const tuple<double, double, double> & best_rates )
 {
   cout << "** Best rates: " << get<0>( best_rates )
        << " " << get<1>( best_rates )
@@ -106,9 +106,9 @@ void print( const tuple<float, float, float> & best_rates )
 int main()
 {
   ParkingLot network;
-  tuple<float, float, float> best_rates { 17, 7, 3 };
+  tuple<double, double, double> best_rates { 17, 7, 3 };
 
-  float scale = 20;
+  double scale = 20;
 
   while ( true ) {
     print( best_rates );
@@ -122,6 +122,8 @@ int main()
     print( best_rates );
     cout << "Optimizing C.\n";
     best_rates = search_one<2>( network, best_rates, scale );
+
+    scale *= 0.99;
   }
 
   /*
