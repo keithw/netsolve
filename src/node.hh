@@ -4,20 +4,23 @@
 
 #include "flow.hh"
 
-class Router
+class Node
 {
 private:
+  std::string name_;
   std::unordered_map<std::string, Flow> inputs_ {};
   double output_capacity_;
 
 public:
-  Router( const double output_capacity )
-    : output_capacity_( output_capacity )
+  Node( const std::string & name,
+	  const double output_capacity )
+    : name_( name ),
+      output_capacity_( output_capacity )
   {}
 
   double output_capacity() const { return output_capacity_; }
 
-  double total_input() const;
+  double total_transiting_inputs() const;
   double delivery_proportion() const;
   double output_rate() const;
 };

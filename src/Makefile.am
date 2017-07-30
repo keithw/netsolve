@@ -1,7 +1,7 @@
 AM_CPPFLAGS = $(CXX14_FLAGS)
 AM_CXXFLAGS = $(PICKY_CXXFLAGS)
 
-common_source = router.hh router.cc \
+common_source = node.hh node.cc \
 	flow.hh
 
 bin_PROGRAMS = demo

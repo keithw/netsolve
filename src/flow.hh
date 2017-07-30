@@ -18,4 +18,5 @@ public:
 
   double rate() const { return rate_; }
   void set_rate( const double rate ) { rate_ = rate; }
+  const std::string & destination() const { return destination_; }
 };

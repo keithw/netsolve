@@ -1,11 +1,11 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "router.hh"
+#include "node.hh"
 
 int main()
 {
-  Router router { 5 };
+  Node node { "x", 5 };
 
   return EXIT_SUCCESS;
 }
