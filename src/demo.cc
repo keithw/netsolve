@@ -7,6 +7,13 @@
 
 using namespace std;
 
+float PCC_utility( const float sending_rate,
+		   const float throughput )
+{
+  const float loss_rate = 1 - sending_rate / throughput;
+  return throughput * ( 1.0f - 1.0f / ( 1.0f + exp( -100.0f * ( loss_rate - 0.05f ) ) ) ) - sending_rate * loss_rate;
+}
+
 float utility( const float throughput )
 {
   return log( throughput );
@@ -31,9 +38,9 @@ int main()
       for ( float C = 0; C < 30; C += .05f ) {
 	const auto throughputs = network.throughputs_fast( A, B, C, calculation_count++ );
 	const float score =
-	  utility( get<0>( throughputs ) )
-	  + utility( get<1>( throughputs ) )
-	  + utility( get<2>( throughputs ) );
+	  PCC_utility( A, get<0>( throughputs ) )
+	  + PCC_utility( B, get<1>( throughputs ) )
+	  + PCC_utility( C, get<2>( throughputs ) );
 	if ( score > best_score ) {
 	  best_score = score;
 	  best_throughputs = throughputs;
