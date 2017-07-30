@@ -20,6 +20,36 @@ float utility( const float sending_rate __attribute((unused)),
   return log( throughput );
 }
 
+
+template <unsigned int i>
+tuple<float, float, float> search_one( ParkingLot & network,
+				       tuple<float, float, float> guess,
+				       const float search_radius )
+{
+  tuple<float, float, float> best_rates { -1, -1, -1 };
+  float best_score = numeric_limits<float>::lowest();
+
+  const float the_min = max( 0.0f, get<i>( guess ) - search_radius );
+  const float the_max = get<i>( guess ) + search_radius;
+
+  cout << "Optimizing sender " << i << " on [" << the_min << ".." << the_max << "].\n";
+
+  for ( float val = the_min; val < the_max; val += (the_max - the_min) / 10000.0f ) {
+    get<i>( guess ) = val;
+    const auto throughputs = network.throughputs_fast( get<0>( guess ),
+						       get<1>( guess ),
+						       get<2>( guess ) );
+    const float score = PCC_utility( get<i>( guess ), get<i>( throughputs ) );
+
+    if ( score > best_score ) {
+      best_score = score;
+      best_rates = guess;
+    }
+  }
+
+  return best_rates;  
+}
+
 tuple<float, float, float> search( ParkingLot & network,
 				   const tuple<float, float, float> guess,
 				   const float search_radius )
@@ -66,13 +96,35 @@ tuple<float, float, float> search( ParkingLot & network,
   return best_throughputs;
 }
 
+void print( const tuple<float, float, float> & best_rates )
+{
+  cout << "** Best rates: " << get<0>( best_rates )
+       << " " << get<1>( best_rates )
+       << " " << get<2>( best_rates ) << "\n";  
+}
+
 int main()
 {
   ParkingLot network;
-  tuple<float, float, float> best_throughputs { 15, 15, 15 };
+  tuple<float, float, float> best_rates { 17, 7, 3 };
 
-  cout << PCC_utility( 13.7f, 18.2f ) << "\n";
+  float scale = 20;
 
+  while ( true ) {
+    print( best_rates );
+    cout << "Optimizing A.\n";
+    best_rates = search_one<0>( network, best_rates, scale );
+
+    print( best_rates );
+    cout << "Optimizing B.\n";
+    best_rates = search_one<1>( network, best_rates, scale );
+
+    print( best_rates );
+    cout << "Optimizing C.\n";
+    best_rates = search_one<2>( network, best_rates, scale );
+  }
+
+  /*
   best_throughputs = search( network, best_throughputs, 15 );
   cout << "Best throughputs after round 1: " << get<0>( best_throughputs )
        << " " << get<1>( best_throughputs )
@@ -92,6 +144,7 @@ int main()
   cout << "Best throughputs after round 4: " << get<0>( best_throughputs )
        << " " << get<1>( best_throughputs )
        << " " << get<2>( best_throughputs ) << "\n";
+  */
 
   cout << "Successful audits of the fast calculation: " << network.audit_count() << "\n";
 
