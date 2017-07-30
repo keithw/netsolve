@@ -20,11 +20,36 @@ double utility( const double sending_rate __attribute((unused)),
   return log( throughput );
 }
 
+template <unsigned int i>
+double partial( ParkingLot & network,
+		const tuple<double, double, double> guess,
+		const double epsilon )
+{
+  /* reference point */
+  const auto throughputs = network.throughputs_fast( get<0>( guess ),
+						     get<1>( guess ),
+						     get<2>( guess ) );
+
+  const double score = PCC_utility( get<i>( guess ), get<i>( throughputs ) );
+
+  /* new point */
+  auto new_guess = guess;
+  get<i>( new_guess ) += epsilon;
+
+  const auto new_throughputs = network.throughputs_fast( get<0>( new_guess ),
+							 get<1>( new_guess ),
+							 get<2>( new_guess ) );
+
+  const double new_score = PCC_utility( get<i>( new_guess ), get<i>( new_throughputs ) );
+
+  /* partial derivative */
+  return (new_score - score) / (epsilon);
+}
 
 template <unsigned int i>
 tuple<double, double, double> search_one( ParkingLot & network,
-				       tuple<double, double, double> guess,
-				       const double search_radius )
+					  tuple<double, double, double> guess,
+					  const double search_radius )
 {
   tuple<double, double, double> best_rates { -1, -1, -1 };
   double best_score = numeric_limits<double>::lowest();
@@ -33,6 +58,13 @@ tuple<double, double, double> search_one( ParkingLot & network,
   const double the_max = get<i>( guess ) + search_radius;
 
   cout << "Optimizing sender " << i << " on [" << the_min << ".." << the_max << "].\n";
+
+  cout << "Tiny increase d/dx: " << partial<i>( network, guess,
+						1024 * numeric_limits<double>::epsilon() );
+
+  cout << ", large increase d/dx: " << partial<i>( network, guess,
+						   .0001 ) << "\n";
+
 
   for ( double val = the_min; val < the_max; val += (the_max - the_min) / 1000000.0 ) {
     get<i>( guess ) = val;
@@ -106,7 +138,7 @@ void print( const tuple<double, double, double> & best_rates )
 int main()
 {
   ParkingLot network;
-  tuple<double, double, double> best_rates { 17, 7, 3 };
+  tuple<double, double, double> best_rates { 14, 4, 6 };
 
   double scale = 20;
 
