@@ -7,7 +7,7 @@
 
 using namespace std;
 
-double utility( const double throughput )
+float utility( const float throughput )
 {
   return log( throughput );
 }
@@ -16,21 +16,21 @@ int main()
 {
   ParkingLot network;
 
-  tuple<double, double, double> best_throughputs;
-  double best_score = numeric_limits<double>::lowest();
+  tuple<float, float, float> best_throughputs;
+  float best_score = numeric_limits<float>::lowest();
   unsigned int calculation_count = 0;
   int last_percent = -1;
 
-  for ( double A = 0; A < 30; A += .05 ) {
+  for ( float A = 0; A < 30; A += .05f ) {
     const int percent = int( 100 * A / 30 );
     if ( percent != last_percent ) {
       cerr << percent << "%\n";
       last_percent = percent;
     }
-    for ( double B = 0; B < 30; B += .05 ) {
-      for ( double C = 0; C < 30; C += .05 ) {
+    for ( float B = 0; B < 30; B += .05f ) {
+      for ( float C = 0; C < 30; C += .05f ) {
 	const auto throughputs = network.throughputs_fast( A, B, C, calculation_count++ );
-	const double score =
+	const float score =
 	  utility( get<0>( throughputs ) )
 	  + utility( get<1>( throughputs ) )
 	  + utility( get<2>( throughputs ) );

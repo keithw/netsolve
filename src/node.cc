@@ -7,9 +7,9 @@ bool Node::flow_transits_node( const Flow & flow ) const
   return flow.destination() != name_;
 }
 
-double Node::total_transiting_inputs() const
+float Node::total_transiting_inputs() const
 {
-  double ret = 0.0;
+  float ret = 0.0;
   for ( const auto & x : inputs_ ) {
     if ( flow_transits_node( x.second ) ) {
       ret += x.second.rate();
@@ -18,12 +18,12 @@ double Node::total_transiting_inputs() const
   return ret;
 }
 
-double Node::delivery_proportion() const
+float Node::delivery_proportion() const
 {
   return output_rate() / total_transiting_inputs();
 }
 
-double Node::output_rate() const
+float Node::output_rate() const
 {
   return min( total_transiting_inputs(), output_capacity_ );
 }
@@ -35,7 +35,7 @@ void Node::add_flow( const Flow & flow )
 
 void Node::connect( Node & next_hop ) const
 {
-  const double p = delivery_proportion();
+  const float p = delivery_proportion();
 
   for ( const auto & x : inputs_ ) {
     if ( flow_transits_node( x.second ) ) {
