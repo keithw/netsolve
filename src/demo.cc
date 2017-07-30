@@ -19,15 +19,9 @@ int main()
 	tuple<double, double, double> best_rates { A, B, C };
 
 	while ( true ) {
-	  cout << "Trying to improve " << to_string( best_rates );
-
-	  auto new_rates_A = Optimizer<0>::search_one( network, best_rates );
-	  auto new_rates_B = Optimizer<1>::search_one( network, best_rates );
-	  auto new_rates_C = Optimizer<2>::search_one( network, best_rates );
-
-	  auto new_rates = make_tuple( get<0>( new_rates_A ),
-				       get<1>( new_rates_B ),
-				       get<2>( new_rates_C ) );
+	  auto new_rates = Optimizer<0>::search_one( network, best_rates );
+	  new_rates = Optimizer<1>::search_one( network, new_rates );
+	  new_rates = Optimizer<2>::search_one( network, new_rates );
 
 	  const double diff_A = abs( get<0>( new_rates ) - get<0>( best_rates ) );
 	  const double diff_B = abs( get<1>( new_rates ) - get<1>( best_rates ) );
@@ -35,11 +29,9 @@ int main()
 
 	  const double max_diff = max( max( diff_A, diff_B ), diff_C );
 
-	  cout << "max diff: " << max_diff << "\n";
-
 	  best_rates = new_rates;
 
-	  if ( max_diff < 1e-4 ) {
+	  if ( max_diff < 1e-7 ) {
 	    break;
 	  }
 	}

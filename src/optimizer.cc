@@ -76,6 +76,6 @@ typename NetworkType::Rates Optimizer<component>::search_one( NetworkType & netw
       guess = high_guess;
     }
 
-    delta *= 1.1;
+    delta *= 1.25;
   }
 }
