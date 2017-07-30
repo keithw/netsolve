@@ -17,20 +17,20 @@ private:
   Flow C { "C", "z" };
 
   std::tuple<float, float, float> throughputs_shortcut( const float A_rate,
-							   const float B_rate,
-							   const float C_rate ) const;
+							const float B_rate,
+							const float C_rate ) const;
 
+  unsigned int calculation_count_ {};
   unsigned int audit_count_ {};
 
 public:
   std::tuple<float, float, float> throughputs( const float A_rate,
-						  const float B_rate,
-						  const float C_rate );
+					       const float B_rate,
+					       const float C_rate );
 
   std::tuple<float, float, float> throughputs_fast( const float A_rate,
-						       const float B_rate,
-						       const float C_rate,
-						       const unsigned int i );
+						    const float B_rate,
+						    const float C_rate );
 
   unsigned int audit_count() const { return audit_count_; }
 };

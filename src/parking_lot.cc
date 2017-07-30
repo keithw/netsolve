@@ -47,13 +47,12 @@ tuple<float, float, float> ParkingLot::throughputs_shortcut( const float A_rate,
 }
 
 tuple<float, float, float> ParkingLot::throughputs_fast( const float A_rate,
-							    const float B_rate,
-							    const float C_rate,
-							    const unsigned int i )
+							 const float B_rate,
+							 const float C_rate )
 {
   const auto fast_answer = throughputs_shortcut( A_rate, B_rate, C_rate );
 
-  if ( i % 73 == 0 ) {
+  if ( calculation_count_++ % 73 == 0 ) {
     const auto slow_answer = throughputs( A_rate, B_rate, C_rate );
     audit_count_++;
     if ( fast_answer != slow_answer ) {
