@@ -1,35 +1,19 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "node.hh"
-#include "flow.hh"
+#include "parking_lot.hh"
 
 using namespace std;
 
 int main()
 {
-  Node x { "x", 20 };
-  Node y { "y", 20 };
-  Node z { "z", 0 };
+  ParkingLot network;
 
-  Flow A { "A", "y" };
-  Flow B { "B", "z" };
-  Flow C { "C", "z" };
+  const auto ret = network.throughputs( 15, 5, 5 );
+  cout << get<0>( ret ) << "\n";
 
-  A.set_rate( 15 );
-  B.set_rate( 15 );
-  C.set_rate( 15 );
-
-  x.add_flow( A );
-  y.add_flow( B );
-  x.add_flow( C );
-
-  x.connect( y );
-  y.connect( z );
-
-  cout << y.terminal_flow( "A" ).str() << "\n";
-  cout << z.terminal_flow( "B" ).str() << "\n";
-  cout << z.terminal_flow( "C" ).str() << "\n";
+  const auto ret2 = network.throughputs( 15, 5, 6 );
+  cout << get<0>( ret2 ) << "\n";
 
   return EXIT_SUCCESS;
 }

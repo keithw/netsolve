@@ -2,7 +2,8 @@ AM_CPPFLAGS = $(CXX17_FLAGS)
 AM_CXXFLAGS = $(PICKY_CXXFLAGS)
 
 common_source = node.hh node.cc \
-	        flow.hh flow.cc
+	        flow.hh flow.cc \
+	        parking_lot.hh parking_lot.cc
 
 bin_PROGRAMS = demo
 
