@@ -16,7 +16,7 @@ public:
 private:
   static const constexpr unsigned int AUDIT_INTERVAL = 73;
 
-  Node x { "x", 20 };
+  Node x { "x", 10 };
   Node y { "y", 10 };
   Node z { "z", 0 };
 
@@ -35,6 +35,8 @@ public:
   Rates throughputs_fast( const Rates & rates );
 
   unsigned int audit_count() const { return audit_count_; }
+
+  ~ParkingLot();
 };
 
 extern std::string to_string( const ParkingLot::Rates & rates );

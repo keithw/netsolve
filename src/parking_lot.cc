@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <iostream>
 
 #include "parking_lot.hh"
 
@@ -67,7 +68,12 @@ ParkingLot::Rates ParkingLot::throughputs_fast( const ParkingLot::Rates & rates 
 
 string to_string( const ParkingLot::Rates & rates )
 {
-  return "A=" + to_string( get<0>( rates ) )
-    + ", B=" + to_string( get<1>( rates ) )
-    + ", C=" + to_string( get<2>( rates ) );
+  return to_string( get<0>( rates ) )
+    + " " + to_string( get<1>( rates ) )
+    + " " + to_string( get<2>( rates ) );
+}
+
+ParkingLot::~ParkingLot()
+{
+  cerr << "Number of successful audits of fast path: " << audit_count() << "\n";
 }
