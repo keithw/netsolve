@@ -16,8 +16,21 @@ private:
   Flow B { "B", "z" };
   Flow C { "C", "z" };
 
+  std::tuple<double, double, double> throughputs_shortcut( const double A_rate,
+							   const double B_rate,
+							   const double C_rate ) const;
+
+  unsigned int audit_count_ {};
+
 public:
   std::tuple<double, double, double> throughputs( const double A_rate,
 						  const double B_rate,
 						  const double C_rate );
+
+  std::tuple<double, double, double> throughputs_fast( const double A_rate,
+						       const double B_rate,
+						       const double C_rate,
+						       const unsigned int i );
+
+  unsigned int audit_count() const { return audit_count_; }
 };
