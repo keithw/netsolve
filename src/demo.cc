@@ -10,7 +10,7 @@ using namespace std;
 float PCC_utility( const float sending_rate,
 		   const float throughput )
 {
-  const float loss_rate = 1 - sending_rate / throughput;
+  const float loss_rate = 1 - throughput / sending_rate;
   return throughput * ( 1.0f - 1.0f / ( 1.0f + exp( -100.0f * ( loss_rate - 0.05f ) ) ) ) - sending_rate * loss_rate;
 }
 
