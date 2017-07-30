@@ -2,11 +2,16 @@
 
 using namespace std;
 
+bool Node::flow_transits_node( const Flow & flow ) const
+{
+  return flow.destination() != name_;
+}
+
 double Node::total_transiting_inputs() const
 {
   double ret = 0.0;
   for ( const auto & x : inputs_ ) {
-    if ( x.second.destination() != name_ ) {
+    if ( flow_transits_node( x.second ) ) {
       ret += x.second.rate();
     }
   }
@@ -21,4 +26,31 @@ double Node::delivery_proportion() const
 double Node::output_rate() const
 {
   return min( total_transiting_inputs(), output_capacity_ );
+}
+
+void Node::add_flow( const Flow & flow )
+{
+  inputs_.insert_or_assign( flow.source(), flow.add_hop( name_ ) );
+}
+
+void Node::connect( Node & next_hop ) const
+{
+  const double p = delivery_proportion();
+
+  for ( const auto & x : inputs_ ) {
+    if ( flow_transits_node( x.second ) ) {
+      next_hop.add_flow( x.second.scale( p ) );
+    }
+  }
+}
+
+const Flow & Node::terminal_flow( const std::string & source ) const
+{
+  const Flow & ret = inputs_.at( source );
+
+  if ( not flow_transits_node( inputs_.at( source ) ) ) {
+    throw runtime_error( "Flow from " + source + " does not transit node " + name_ );
+  }
+
+  return ret;
 }

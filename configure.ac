@@ -4,13 +4,13 @@
 AC_PREREQ([2.68])
 AC_INIT([netsolve], [0.01], [keithw@cs.stanford.edu])
 AM_INIT_AUTOMAKE([foreign])
-AC_CONFIG_SRCDIR([src/output.hh])
+AC_CONFIG_SRCDIR([src/node.hh])
 AC_CONFIG_HEADERS([config.h])
 
 # Add picky CXXFLAGS
-CXX14_FLAGS="-std=c++14 -pthread"
+CXX17_FLAGS="-std=c++17 -pthread"
 PICKY_CXXFLAGS="-pedantic -Wall -Wextra -Weffc++ -Wconversion -Wsign-conversion -Werror"
-AC_SUBST([CXX14_FLAGS])
+AC_SUBST([CXX17_FLAGS])
 AC_SUBST([PICKY_CXXFLAGS])
 
 # Checks for programs.

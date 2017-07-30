@@ -1,8 +1,8 @@
-AM_CPPFLAGS = $(CXX14_FLAGS)
+AM_CPPFLAGS = $(CXX17_FLAGS)
 AM_CXXFLAGS = $(PICKY_CXXFLAGS)
 
 common_source = node.hh node.cc \
-	flow.hh
+	        flow.hh flow.cc
 
 bin_PROGRAMS = demo
 

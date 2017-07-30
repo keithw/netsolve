@@ -1,22 +1,31 @@
 #pragma once
 
+#include <string>
+
 class Flow
 {
 private:
-  std::string id_;
+  std::string source_;
   std::string destination_;
   double rate_;
+  std::string route_;
 
 public:
-  Flow( const std::string & id,
+  Flow( const std::string & source,
 	const std::string & destination,
 	const double rate )
-    : id_( id ),
+    : source_( source ),
       destination_( destination ),
-      rate_( rate )
+      rate_( rate ),
+      route_( source )
   {}
 
-  double rate() const { return rate_; }
   void set_rate( const double rate ) { rate_ = rate; }
+
+  const std::string & source() const { return source_; }
   const std::string & destination() const { return destination_; }
+  double rate() const { return rate_; }
+
+  Flow add_hop( const std::string & hop ) const;
+  Flow scale( const double delivery_proportion ) const;
 };
