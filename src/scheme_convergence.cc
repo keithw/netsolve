@@ -29,7 +29,7 @@ public:
       //      const double loss_rate = send_rate() - throughput;
       send_rate_ *= random;
     } else {
-      send_rate_ += 1;
+      send_rate_ += .01;
     }
   }
 };
@@ -37,15 +37,15 @@ public:
 int main()
 {
   default_random_engine rng { random_device{}() };
-  uniform_real_distribution<> random_backoff { .5, 1 };
+  uniform_real_distribution<> random_backoff { .99, 1 };
 
   ParkingLot network;
 
   cout << setprecision( 20 );
 
-  for ( double Ar = 0; Ar < 11; Ar += 0.5 ) {
-    for ( double Br = 0; Br < 11; Br += 0.5 ) {
-      for ( double Cr = 0; Cr < 11; Cr += 0.5 ) {
+  for ( double Ar = 0; Ar < 11; Ar += .25 ) {
+    for ( double Br = 0; Br < 11; Br += .25 ) {
+      for ( double Cr = 0; Cr < 11; Cr += .25 ) {
 	CCScheme A { Ar }, B { Br }, C { Cr };
 
 	ParkingLot::Rates total_throughputs { 0, 0, 0 };

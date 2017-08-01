@@ -13,9 +13,9 @@ int main()
 
   cout << setprecision( 20 );
 
-  for ( double A = 0; A < 11; A += 0.5 ) {
-    for ( double B = 0; B < 11; B += 0.5 ) {
-      for ( double C = 0; C < 11; C += 0.5 ) {
+  for ( double A = 0; A < 11; A += 0.25 ) {
+    for ( double B = 0; B < 11; B += 0.25 ) {
+      for ( double C = 0; C < 11; C += 0.25 ) {
 	tuple<double, double, double> best_rates { A, B, C };
 
 	while ( true ) {
