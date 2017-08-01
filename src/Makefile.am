@@ -6,6 +6,8 @@ common_source = node.hh node.cc \
 	        parking_lot.hh parking_lot.cc \
 	        optimizer.hh optimizer.cc
 
-bin_PROGRAMS = pcc_convergence
+bin_PROGRAMS = pcc_convergence scheme_convergence
 
 pcc_convergence_SOURCES = pcc_convergence.cc $(common_source)
+
+scheme_convergence_SOURCES = scheme_convergence.cc $(common_source)

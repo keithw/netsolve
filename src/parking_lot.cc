@@ -35,7 +35,7 @@ ParkingLot::Rates ParkingLot::throughputs_shortcut( const Rates & rates ) const
 
   const double x_transiting_input = A_rate + C_rate;
   const double x_output = min( x_transiting_input, x.output_capacity() );
-  const double x_delivery_proportion = x_output / x_transiting_input;
+  const double x_delivery_proportion = x_transiting_input ? x_output / x_transiting_input : 1;
 
   const double A_throughput = A_rate * x_delivery_proportion;
 
@@ -43,7 +43,7 @@ ParkingLot::Rates ParkingLot::throughputs_shortcut( const Rates & rates ) const
 
   const double y_transiting_input = C_rate_after_x + B_rate;
   const double y_output = min( y_transiting_input, y.output_capacity() );
-  const double y_delivery_proportion = y_output / y_transiting_input;
+  const double y_delivery_proportion = y_transiting_input ? y_output / y_transiting_input : 1;
 
   const double B_throughput = B_rate * y_delivery_proportion;
   const double C_throughput = C_rate_after_x * y_delivery_proportion;

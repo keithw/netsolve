@@ -20,6 +20,10 @@ double Node::total_transiting_inputs() const
 
 double Node::delivery_proportion() const
 {
+  if ( total_transiting_inputs() == 0 ) {
+    return 1.0;
+  }
+
   return output_rate() / total_transiting_inputs();
 }
 
