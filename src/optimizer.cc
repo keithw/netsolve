@@ -12,7 +12,7 @@
 /* https://github.com/modong/pcc/blob/1afc958f/README.md */
 /* https://github.com/modong/pcc/blob/1afc958f/sender/app/cc.h#L302 */
 
-static double utility_function( const double sending_rate,
+inline double utility_function( const double sending_rate,
 				const double throughput )
 
 {
