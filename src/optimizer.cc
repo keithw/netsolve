@@ -17,7 +17,7 @@ inline double utility_function( const double sending_rate,
 
 {
   const double loss_rate = 1 - throughput / sending_rate;
-  return throughput * ( 1.0f - 1.0f / ( 1.0f + exp( -100.0f * ( loss_rate - 0.05f ) ) ) ) - sending_rate * loss_rate;
+  return log( throughput ) - loss_rate;
 }
 
 /* perturb one component of the rates */
