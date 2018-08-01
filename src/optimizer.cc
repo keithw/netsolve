@@ -2,6 +2,7 @@
 #include <tuple>
 #include <limits>
 #include <stdexcept>
+#include <iostream>
 
 #include "optimizer.hh"
 
@@ -16,8 +17,8 @@ inline double utility_function( const double sending_rate,
 				const double throughput )
 
 {
-  const double loss_rate = 1 - throughput / sending_rate;
-  return log( throughput ) - loss_rate;
+  //  const double loss_rate = 1 - throughput / sending_rate;
+  return .001 * log( sending_rate ) - sending_rate + throughput;
 }
 
 /* perturb one component of the rates */
@@ -47,35 +48,23 @@ template <class NetworkType>
 typename NetworkType::Rates Optimizer<component>::search_one( NetworkType & network,
 							      typename NetworkType::Rates guess )
 {
-  double delta { INITIAL_DELTA };
-
-  while ( true ) {
-    /* limit size of change in throughput that can be made in one individual flow's optimization */
-    if ( delta >= 0.1 ) {
-      return guess;
-    }
-
-    /* don't allow flooding */
-    if ( std::get<component>( guess ) > network.max_reasonable_rate() ) {
-      throw std::runtime_error( "flooding detected" );
-    }
-
-    /* evaluate whether reducing, increasing, or staying the same is best */
-    const auto low_guess = adjust_rate( guess, -delta );
-    const auto high_guess = adjust_rate( guess, delta );
-
-    const double low_score = evaluate( network, low_guess );
-    const double mid_score = evaluate( network, guess );
-    const double high_score = evaluate( network, high_guess );
-
-    if ( mid_score >= low_score and mid_score >= high_score ) {
-      return guess;
-    } else if ( low_score > mid_score ) {
-      guess = low_guess;
-    } else {
-      guess = high_guess;
-    }
-
-    delta *= 1.25;
+  /* don't allow flooding */
+  if ( std::get<component>( guess ) > network.max_reasonable_rate() ) {
+    throw std::runtime_error( "flooding detected" );
   }
+
+  const auto sending_rates = guess;
+  const auto throughputs = network.throughputs_fast( sending_rates );
+  const auto our_sending_rate = std::get<component>( sending_rates );
+  const auto our_throughput =   std::get<component>( throughputs );
+  const auto our_loss_rate = our_sending_rate - our_throughput;
+
+  const double adjustment = .01 * (.01 - our_loss_rate);
+
+  //  std::cerr << "flow " << component << " adjusting rate from " << our_sending_rate << " by " << adjustment << " => ";
+
+  guess = adjust_rate( guess, adjustment );
+
+  //  std::cerr << "now " << std::get<component>( guess ) << "\n";
+  return guess;
 }

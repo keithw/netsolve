@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <iomanip>
+#include <random>
 
 #include "parking_lot.hh"
 #include "optimizer.cc"
@@ -13,32 +14,37 @@ int main()
 
   cout << setprecision( 20 );
 
-  for ( double A = 0; A < 11; A += 0.25 ) {
-    for ( double B = 0; B < 11; B += 0.25 ) {
-      for ( double C = 0; C < 11; C += 0.25 ) {
-	tuple<double, double, double> best_rates { A, B, C };
+  default_random_engine gen { random_device()() };
+  uniform_real_distribution<> dist { 0, 12.0 };
 
-	while ( true ) {
-	  auto new_rates = Optimizer<0>::search_one( network, best_rates );
-	  new_rates = Optimizer<1>::search_one( network, new_rates );
-	  new_rates = Optimizer<2>::search_one( network, new_rates );
+  while ( true ) {
+    const double A = dist( gen );
+    const double B = dist( gen );
+    const double C = dist( gen );
+ 
+    tuple<double, double, double> best_rates { A, B, C };
 
-	  const double diff_A = abs( get<0>( new_rates ) - get<0>( best_rates ) );
-	  const double diff_B = abs( get<1>( new_rates ) - get<1>( best_rates ) );
-	  const double diff_C = abs( get<2>( new_rates ) - get<2>( best_rates ) );
+    while ( true ) {
+      auto new_rates = Optimizer<0>::search_one( network, best_rates );
+      new_rates = Optimizer<1>::search_one( network, new_rates );
+      new_rates = Optimizer<2>::search_one( network, new_rates );
 
-	  const double max_diff = max( max( diff_A, diff_B ), diff_C );
+      const double diff_A = abs( get<0>( new_rates ) - get<0>( best_rates ) );
+      const double diff_B = abs( get<1>( new_rates ) - get<1>( best_rates ) );
+      const double diff_C = abs( get<2>( new_rates ) - get<2>( best_rates ) );
 
-	  best_rates = new_rates;
+      const double max_diff = max( max( diff_A, diff_B ), diff_C );
 
-	  if ( max_diff < 1e-7 ) {
-	    break;
-	  }
-	}
-
-	cout << A << " " << B << " " << C << " -> " << to_string( best_rates ) << "\n";
-	cout << flush;
+      best_rates = new_rates;
+      
+      if ( max_diff < 1e-7 ) {
+	break;
       }
+    }
+
+    if ( abs( get<2>( best_rates ) - 3.345270 ) > .01 ) {
+      cout << A << " " << B << " " << C << " -> " << to_string( best_rates ) << "\n";
+      cout << flush;
     }
   }
 
